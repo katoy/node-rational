@@ -1,6 +1,4 @@
 
-tarvis : [![Build Status](https://secure.travis-ci.org/katoy/node-rational.png)](http://travis-ci.org/katoy/node-rational) 
-
 This is fractopn library in coffee-script.
 
 これは 分数、循環種数表記をサポーtした有理数を扱う coffee-script のコードです。
