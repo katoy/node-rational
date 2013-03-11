@@ -160,3 +160,10 @@ describe "pareStr_repeat", ->
   it "355/113", ->
     r = new Rational(355, 113)
     assert.equal r.toRepeatString(), "3.{1415929203539823008849557522123893805309734513274336283185840707964601769911504424778761061946902654867256637168}"
+
+describe "getRepeatString", ->
+  it "1/3 -> 0.{3}", ->
+    assert.equal Rational.getRepeatString(1, 3), "0.{3}"
+
+  it "1/2 -> 0.5", ->
+    assert.equal Rational.getRepeatString(1, 2), "0.5"

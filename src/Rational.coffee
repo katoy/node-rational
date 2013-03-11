@@ -138,34 +138,42 @@ class Rational
   toString: ->
     "#{@n.toString()}/#{@d.toString()}"
 
+  #
   toRepeatString:  ->
-    # See - http://ja.doukaku.org/9/
-    #       > 分数を小数に展開
+    Rational.getRepeatString(@n, @d)
 
-    a = @n
-    b = @d
+  @getRepeatString: (a, b) ->
+    # See - http://ja.doukaku.org/9/
+    #       > 分数を小数に展開 (循環小数は 0.{3} のように {} で循環部を示す)
+
+    a = bignum(a) unless a instanceof bignum
+    b = bignum(b) unless b instanceof bignum
 
     sign = if (a.div(b).ge(0)) then "" else "-"
     a = a.abs()
     b = b.abs()
 
     return "#{sign}#{a}" if b.eq(1)
-   
+
+    m = []  # 余りを保存する   
+
     r = "#{a.div(b).toString()}."
-    a = a.mod(b)  
-    m = []
+    a = a.mod(b)
+
     while a.gt(0)
       m.push a.toString()
       a = a.mul(10)
       r += "#{a.div(b).toString()}"
       a = a.mod(b)
+
       i = m.indexOf(a.toString())
       # console.log "------ i=#{i}, #{util.inspect(m, false, null)}"
-      if i >= 0
+      if i >= 0  # 余りが繰り替えされたので...
         r = r.substring(0, i+2) + '{' + r.substring(i+2) + "}"
         break
-    "#{sign}#{r}"
 
+    "#{sign}#{r}"
+  
   #
   strPow10 = (p) ->
     zs = ''
