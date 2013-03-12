@@ -168,7 +168,7 @@ class Rational
 
       i = m.indexOf(a.toString())
       # console.log "------ i=#{i}, #{util.inspect(m, false, null)}"
-      if i >= 0  # 余りが繰り替えされたので...
+      if i >= 0  # 余りが繰り返えされたので...
         r = r.substring(0, i+2) + '{' + r.substring(i+2) + "}"
         break
 
