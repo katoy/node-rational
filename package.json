@@ -43,7 +43,7 @@
     "url": "http://www.opensource.org/licenses/mit-license.php"
   },
   "scripts": {
-    "test": "cake build; mocha",
+    "test": "cake build build_parser; mocha",
     "start": "./node_modules/.bin/coffee examples/sample-00.coffee"
   }
 }

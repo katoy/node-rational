@@ -18,13 +18,13 @@ travis: [![Build Status](https://travis-ci.org/katoy/node-rational.png?branch=ma
     $ npm test
 	$ npm start
 
-このライブラーでは循環種数は、繰り返し部分を {, } で囲んで表記します。
+このライブリーでは循環種数は、繰り返し部分を {, } で囲んで表記します。
 例：
 - 1/3 = 3.3333... は 0.{3}
 - 1/6 = 0.166... は 0.1{6}
 
 npm test では ./examples/sample-00.coffee が走る。
-次のようなにコンソールに出力されるはず。
+次のようにコンソールに出力されるはず。
 
 
     1/3
@@ -118,5 +118,13 @@ Developing
     cake open_coverage        # open coverage report
 
 
+サンプル
+========
+
+ 
+    $ coffee example/sample-01.coffee
+	
+Rational での四則演算の式の値を評価しています。
+	
 
 
