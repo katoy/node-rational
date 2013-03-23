@@ -1,4 +1,4 @@
-1# Refer:
+# Refer:
 # 1. https://github.com/twilson63/cakefile-template/blob/master/Cakefile
 # 2. https://github.com/jashkenas/docco/blob/master/Cakefile
 
@@ -78,6 +78,8 @@ option '-r', '--rebuild', 'do relative cleaning tasks before build js or generat
 
 # Tasks
 task 'build', 'build coffee scripts into js', (options) -> build(options)
+task 'build_parser', 'build parser', (options) -> build_parser(options)
+task 'build_browser', 'build parser for browser', (options) -> build_browser(options)
 task 'lint', 'lint coffee scripts', (options) -> lint(options)
 task 'doc', 'generate documents', (options) -> doc(options)
 task 'clean:all', 'clean pervious built js files and documents', (options) -> clean 'all', options.force
@@ -107,7 +109,39 @@ build = (options, callback) ->
       callback(status)
     else
       success "finished status=#{status}"
-      
+
+build_parser =(options, callback) ->
+  exec "rm -f lib/arithmetics.js src/arithmetics.js", (err, stdout, stderr)  ->
+    console.log(err) if err
+    exec "./node_modules/.bin/pegjs src/arithmetics.pegjs", (err, stdout, stderr) ->
+      console.log(err) if err
+      exec "mv -f src/arithmetics.js lib/", (err, stdout, stderr) ->
+        if callback != undefined
+          callback(err)
+        else
+          success "finished arithmetics err=#{err}"
+            
+  exec "rm -f lib/arithmeticsR.js src/arithmeticsR.js", (err, stdout, stderr)  ->
+    console.log(err) if err
+    exec "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", (err, stdout, stderr) ->
+      console.log(err) if err
+      exec "cat src/introR.txt src/arithmeticsR.js > lib/arithmeticsR.js", (err, stdout, stderr) ->
+        if callback != undefined
+          callback(err)
+        else
+          success "finished arithmeticsR err=#{err}"
+
+build_browser =(options, callback) ->
+  exec "rm -f public/js/arithmetics.js src/arithmetics.js", (err, stdout, stderr)  ->
+    console.log(err) if err
+    exec "./node_modules/.bin/pegjs -e arithmetics src/arithmetics.pegjs", (err, stdout, stderr) ->
+      console.log(err) if err
+      exec "mv -f src/arithmetics.js public/js", (err, stdout, stderr) ->
+        if callback != undefined
+          callback(err)
+        else
+          success "finished arithmetics err=#{err}"
+            
 lint = (options, callback) ->
   try
     coffeePath = which 'coffee'

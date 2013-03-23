@@ -19,7 +19,7 @@ class Rational
   #  n - 分子  // bignum, int, string
   #  d - 分母  // gibhum, int, string
   constructor: (n, d) ->
-    throw "#--- constructor: n == undefined" if (n == undefined)
+    throw "#--- Rational.constructor: n == undefined" if (n == undefined)
     n = bignum(n) unless n instanceof bignum
 
     if (d == undefined)
@@ -27,7 +27,7 @@ class Rational
     else if !(d instanceof bignum)
       d = bignum(d)
 
-    throw "#--- constructor: d == 0" if d.eq(0)
+    throw "#--- Rational.constructor: d == 0" if d.eq(0)
 
 
     d = bignum(1) if (BIG_ZERO.eq(n))
@@ -97,7 +97,7 @@ class Rational
    
   # 逆数
   inv: ->
-    throw "#--- inv: @n == 0" if @n.eq(0)
+    throw "#--- Rational.inv: @n == 0" if @n.eq(0)
     new Rational(@d, @n)
 
   # 比較
@@ -149,7 +149,7 @@ class Rational
     a = bignum(a) unless a instanceof bignum
     b = bignum(b) unless b instanceof bignum
 
-    sign = if (a.div(b).ge(0)) then "" else "-"
+    sign = if (a.ge(0)) then "" else "-"
     a = a.abs()
     b = b.abs()
 
@@ -195,7 +195,7 @@ class Rational
 
     str = sprintf("%+.12e", val)
     r = deR.exec(str)
-    throw "#--- parseFloat: Error: #{str}" if (r == null)
+    throw "#--- Rational.parseFloat: Error: #{str}" if (r == null)
 
     [x, s, n0, dot, n1, m] = r
     # console.log "-----------     s = #{s}, n0 = #{n0}, n1 = #{n1}, m = #{m}"
@@ -219,24 +219,24 @@ class Rational
   #
   @parseStr: (str) ->
     repR = /^w*([+-]?)(\d+)\.?(\d*)\{(\d+)\}w*$/   # 循環小数
-    fixpointR = /^w*([+-]?)(\d+)\.?(\d*)2*$/       # 小数
+    fixpointR = /^w*([+-]?)(\d+)\.?(\d*)w*$/       # 小数
 
     pat = repR.exec(str)
-    # util.log "-------- #{util.inspect(pat, false, null)}"
+    #util.log "-------- #{util.inspect(pat, false, null)}"
     if (pat)
       [x, s, a, b, c] = pat
       # console.log util.inspect(pat, false, null)
       sign = if (s == "-") then -1 else 1
       intPart = new Rational(bignum(a))
       nonRepeatPart = if (b == "") then new Rational(0) else new Rational(bignum(b), bignum(strPow10(b.length)))
-      n = bignum(c).mul(sign)
+      n = bignum(c)
       d = bignum(strPow10(c.length)).sub(1).mul(bignum(strPow10(b.length)))
       repeatPart = new Rational(n, d)
-
-      r = intPart.add(nonRepeatPart).add(repeatPart).mul(sign)
+      return intPart.add(nonRepeatPart).add(repeatPart).mul(sign)
 
     else
       pat = fixpointR.exec(str)
+      throw "#--- Rational.parseStr: Error: #{str}" if (pat == null)
       # util.log "-------- #{util.inspect(pat, false, null)}"
       [x, s, a, b] = pat
       sign = if (s == "-") then -1 else 1

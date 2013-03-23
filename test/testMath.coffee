@@ -19,27 +19,27 @@ describe "add", ->
     r1 = new Rational(1,2)
     r2 = new Rational(1)
     r = r1.add(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(3), bignum(2)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "3, 2"
     assert.equal r.toString(), "3/2"
 
   it "1/2 + 1/3 = 5/6", ->
     r1 = new Rational(1,2)
     r2 = new Rational(1,3)
     r = r1.add(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(5), bignum(6)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "5, 6"
     assert.equal r.toString(), "5/6"
 
   it "1/12 + 1/4 = 1/3", ->
     r1 = new Rational(1,12)
     r2 = new Rational(1,4)
     r = r1.add(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 3"
     assert.equal r.toString(), "1/3"
 
   it "1/3 + 1 = 4/3", ->
     r1 = new Rational(1,3)
     r = r1.add(1)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(4), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "4, 3"
     assert.equal r.toString(), "4/3"
 
 describe "sub", ->
@@ -47,27 +47,27 @@ describe "sub", ->
     r1 = new Rational(1,2)
     r2 = new Rational(1)
     r = r1.sub(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(-1), bignum(2)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "-1, 2"
     assert.equal r.toString(), "-1/2"
 
   it "1/2 - 1/3 = 1/6", ->
     r1 = new Rational(1,2)
     r2 = new Rational(1,3)
     r = r1.sub(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(6)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 6"
     assert.equal r.toString(), "1/6"
 
   it "1/12 - 1/4 = -1/6", ->
     r1 = new Rational(1,12)
     r2 = new Rational(1,4)
     r = r1.sub(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(-1), bignum(6)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "-1, 6"
     assert.equal r.toString(), "-1/6"
 
   it "1/3 - 1 = -2/3", ->
     r1 = new Rational(1,3)
     r = r1.sub(1)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(-2), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "-2, 3"
     assert.equal r.toString(), "-2/3"
 
 describe "mult", ->
@@ -75,27 +75,27 @@ describe "mult", ->
     r1 = new Rational(1,2)
     r2 = new Rational(3)
     r = r1.mul(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(3), bignum(2)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "3, 2"
     assert.equal r.toString(), "3/2"
 
   it "2/3 * 1/2 = 1/5", ->
     r1 = new Rational(2,3)
     r2 = new Rational(1,2)
     r = r1.mul(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 3"
     assert.equal r.toString(), "1/3"
 
   it "2/3 * 1/4 = 1/6", ->
     r1 = new Rational(2,3)
     r2 = new Rational(1,4)
     r = r1.mul(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(6)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 6"
     assert.equal r.toString(), "1/6"
 
   it "2/3 * 2 = 4/3", ->
     r1 = new Rational(2,3)
     r = r1.mul(2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(4), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "4, 3"
     assert.equal r.toString(), "4/3"
 
 describe "div", ->
@@ -103,27 +103,27 @@ describe "div", ->
     r1 = new Rational(2,3)
     r2 = new Rational(2)
     r = r1.div(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 3"
     assert.equal r.toString(), "1/3"
 
   it "2/3 / 1/2 = 4/3", ->
     r1 = new Rational(2,3)
     r2 = new Rational(1,2)
     r = r1.div(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(4), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "4, 3"
     assert.equal r.toString(), "4/3"
 
   it "2/3 / 1/4 = 8/3", ->
     r1 = new Rational(2,3)
     r2 = new Rational(1,4)
     r = r1.div(r2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(8), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "8, 3"
     assert.equal r.toString(), "8/3"
 
   it "2/3 / 2 = 1/3", ->
     r1 = new Rational(2,3)
     r = r1.div(2)
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(1), bignum(3)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 3"
     assert.equal r.toString(), "1/3"
 
 describe "pow", ->
@@ -226,7 +226,7 @@ describe "inv", ->
   it "2/3 inv = 3/2", ->
     r = new Rational(2,3)
     r = r.inv()
-    assert.deepEqual [r.numerator(), r.denominator()], [bignum(3), bignum(2)]
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "3, 2"
     assert.equal r.toString(), "3/2"
 
   it "Rational(0).inv() -> error", ->
@@ -235,7 +235,7 @@ describe "inv", ->
       r.inv()
       assert.true(false)
     catch e
-      assert.equal(e.toString(), '#--- inv: @n == 0')
+      assert.equal(e.toString(), '#--- Rational.inv: @n == 0')
 
 #describe "Rational.strPow10", ->
 #  it "", ->

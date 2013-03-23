@@ -42,7 +42,7 @@ r = Rational.parseStr("1.234567890123456789")
 console.log r.toString()        #  1234567890123456789/1000000000000000000
 console.log r.toRepeatString()  # 1.234567890123456789
 
-console.log "---- class methods ----"
+console.log "---- Rational: class methods ----"
 console.log util.inspect(Rational, false, null)
-console.log "---- methods ----"
+console.log "---- Rational: methods ----"
 console.log util.inspect(Rational.prototype, false, null)
