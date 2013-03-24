@@ -4,7 +4,6 @@ path = require 'path'
 libPath = if (process.env.TEST_COV) then 'lib-cov/Rational' else  'lib/Rational'  
 libPath = path.join __dirname, '..', libPath
 Rational = require libPath
-bignum = require 'bignum'
 
 util = require 'util'
 
@@ -133,9 +132,23 @@ describe "pow", ->
   it "2/3 pow 3 -> 8/27", ->
     assert.equal (new Rational(2, 3)).pow(3).toString(), '8/27'
 
-  it "4/9 pow 0.5 -> 1/1", ->
-    assert.equal (new Rational(4, 9)).pow(0.5).toString(), '1/1'
+  it "4/9 pow 0.5 -> error", ->
+    try
+      assert.equal (new Rational(4, 9)).pow(0.5).toString(), '1/1'
+      assert.ok(false)
+    catch e
+      assert.equal "" + e, "#--- Rational.pow: y is non-Integer"
 
+  it "4/9 pow -1 -> error", ->
+    try
+      assert.equal (new Rational(4, 9)).pow(-1).toString(), '1/1'
+      assert.ok(false)
+    catch e
+      assert.equal "" + e, "#--- Rational.pow: y is negative-Integer"
+
+  it "2/3 pow 0 -> 1/1", ->
+    assert.equal (new Rational(2, 3)).pow(0).toString(), '1/1'
+  
 describe "floatValue", ->
   it "1/3 -> 0.33333...", ->
     r = new Rational(1, 3)

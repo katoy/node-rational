@@ -141,6 +141,19 @@ build_browser =(options, callback) ->
           callback(err)
         else
           success "finished arithmetics err=#{err}"
+
+  exec "rm -f public/js/arithmeticsR.js src/arithmeticsR.js public/js/bundle.js", (err, stdout, stderr)  ->
+    console.log(err) if err
+    exec "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", (err, stdout, stderr) ->
+      console.log(err) if err
+      exec "mv -f src/arithmeticsR.js public/js", (err, stdout, stderr) ->
+        console.log(err) if err
+        exec "browserify -o public/js/bundle.js public/js/libR.js", (err, stdout, stderr) ->
+          console.log(err) if err
+          if callback != undefined
+            callback(err)
+          else
+            success "finished arithmetics err=#{err}"
             
 lint = (options, callback) ->
   try

@@ -4,7 +4,6 @@ path = require 'path'
 libPath = if (process.env.TEST_COV) then 'lib-cov/Rational' else  'lib/Rational'  
 libPath = path.join __dirname, '..', libPath
 Rational = require libPath
-bignum = require 'bignum'
 
 util = require 'util'
 
@@ -138,18 +137,18 @@ data = [
 ]
 
 describe "pareStr_repeat", ->
-  it "1/n ->小数 (n in [1..100])", ->
+  it "1/n ->小数 (n in [1..120])", ->
     for v in data
       [n, d, s, rs] = v
       r = new Rational(n, d)
-      assert.equal r.toString(), s
-      assert.equal r.toRepeatString(), rs
+      assert.equal r.toString(), s, v
+      assert.equal r.toRepeatString(), rs, v
 
   it "小数 -> 分数(1/n) ( n in [1..100])", ->
     for v in data
       [n, d, s, rs] = v
       r = Rational.parseStr(rs)
-      assert.equal "#{r.numerator()}/#{r.denominator()}", s
+      assert.equal "#{r.numerator()}/#{r.denominator()}", s, v
 
   # pi : approximate value 22/7
   it "22/7", ->
@@ -167,3 +166,12 @@ describe "getRepeatString", ->
 
   it "1/2 -> 0.5", ->
     assert.equal Rational.getRepeatString(1, 2), "0.5"
+
+  it "0 -> 0", ->
+    assert.equal Rational.getRepeatString(0, 2), "0"
+
+  it "0.0 -> 0", ->
+    assert.equal Rational.getRepeatString(0, 2), "0"
+
+  it "0/2 -> 0", ->
+    assert.equal Rational.getRepeatString(0, 2), "0"

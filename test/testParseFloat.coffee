@@ -4,7 +4,6 @@ path = require 'path'
 libPath = if (process.env.TEST_COV) then 'lib-cov/Rational' else  'lib/Rational'  
 libPath = path.join __dirname, '..', libPath
 Rational = require libPath
-bignum = require 'bignum'
 
 util = require 'util'
 

@@ -4,7 +4,7 @@ path = require 'path'
 libPath = if (process.env.TEST_COV) then 'lib-cov/Rational' else  'lib/Rational'  
 libPath = path.join __dirname, '..', libPath
 Rational = require libPath
-bignum = require 'bignum'
+# bignum = require 'bignum'
 
 util = require 'util'
 
@@ -121,7 +121,8 @@ describe "constructor (str)", ->
     assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 3"
     assert.equal r.toString(), "10/30"
 
-describe "constructor (bignum)", ->
+###
+describe "constructor (bignum)", -> 
   it "Rational(bignum(1), bignum(1)) = [1,1]", ->
     r = new Rational(bignum(1), bignum(1))
     assert.equal "#{r.numerator()}, #{r.denominator()}", "1, 1"
@@ -173,11 +174,12 @@ describe "constructor(x, 0)", ->
       assert.true(false)
     catch e
       assert.equal(e.toString(), '#--- Rational.constructor: d == 0')
+###
 
 describe "constructor()", ->
   it "Rational() -> error", ->
     try
       new Rational()
-      assert.true(false)
+      assert.ok(false)
     catch e
       assert.equal(e.toString(), '#--- Rational.constructor: n == undefined')

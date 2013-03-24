@@ -127,4 +127,10 @@ Developing
 Rational での四則演算の式の値を評価しています。
 	
 
+http://homepage2.nifty.com/youichi_kato/src/pegjs/expression/calcR_01.html  
+テキストエリアに式を入れて ENTER キーを押すと、
+値評価して、分数や小数(場合のよっては循環小数)で表示します。
+
+
+
 

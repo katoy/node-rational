@@ -6,7 +6,6 @@ libPath = path.join __dirname, '..', libPath
 arithmeticsR = require libPath
 
 Rational = require '../lib/Rational'
-bignum = require 'bignum'
 
 util = require 'util'
 

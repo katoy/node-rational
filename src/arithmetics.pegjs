@@ -85,7 +85,7 @@ integer "integer"
   = sign:sign digits:[0-9]+ _ { return sign * parseInt(digits.join(""), 10); }
 
 float "float"
-  = sign:sign parts:([0-9]* "." [0-9]+) _ { return sign * parseFloat(parts.join("")); }
+  = sign:sign parts:([0-9]* "." [0-9]+) _ { return sign * parseFloat(parts[0].join("") + "." + parts[2].join("")); }
 
 /* ===== Whitespace ===== */
 _ "whitespace"

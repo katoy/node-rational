@@ -742,7 +742,7 @@ arithmetics = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, sign, parts) { return sign * parseFloat(parts.join("")); })(pos0, result0[0], result0[1]);
+          result0 = (function(offset, sign, parts) { return sign * parseFloat(parts[0].join("") + "." + parts[2].join("")); })(pos0, result0[0], result0[1]);
         }
         if (result0 === null) {
           pos = pos0;
