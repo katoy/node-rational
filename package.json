@@ -33,7 +33,8 @@
     "tap": ">=0.4.0",
     "tape": ">=0.2.2",
     "which": ">=1.0.5",
-    "fs-extra": ">=0.5.0"
+    "fs-extra": ">=0.5.0",
+    "browserify": ">=~2.7.3"
   },
   "engines": {
     "node": ">=0.8.22"
@@ -43,7 +44,7 @@
     "url": "http://www.opensource.org/licenses/mit-license.php"
   },
   "scripts": {
-    "test": "cake build build_parser; mocha",
+    "test": "cake build build_parser build_browser && mocha",
     "start": "./node_modules/.bin/coffee examples/sample-00.coffee"
   }
 }

@@ -40,6 +40,12 @@ _output = (data, color, prefix) ->
 
 _cleanFiles = () ->
 
+execCmds = (cmds) ->
+  exec cmds.join(' && '), (err, stdout, stderr) ->
+    output = (stdout + stderr).trim()
+    console.log(output + '\n') if (output)
+    throw err if err
+
 # ------------------
 # Paths
 files = [
@@ -111,49 +117,35 @@ build = (options, callback) ->
       success "finished status=#{status}"
 
 build_parser =(options, callback) ->
-  exec "rm -f lib/arithmetics.js src/arithmetics.js", (err, stdout, stderr)  ->
-    console.log(err) if err
-    exec "./node_modules/.bin/pegjs src/arithmetics.pegjs", (err, stdout, stderr) ->
-      console.log(err) if err
-      exec "mv -f src/arithmetics.js lib/", (err, stdout, stderr) ->
-        if callback != undefined
-          callback(err)
-        else
-          success "finished arithmetics err=#{err}"
+  execCmds [
+    "rm -f lib/arithmetics.js src/arithmetics.js", 
+    "./node_modules/.bin/pegjs src/arithmetics.pegjs",
+    "mv -f src/arithmetics.js lib/",
+    "ls -l lib/arithmetics.js",
+  ]
             
-  exec "rm -f lib/arithmeticsR.js src/arithmeticsR.js", (err, stdout, stderr)  ->
-    console.log(err) if err
-    exec "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", (err, stdout, stderr) ->
-      console.log(err) if err
-      exec "cat src/introR.txt src/arithmeticsR.js > lib/arithmeticsR.js", (err, stdout, stderr) ->
-        if callback != undefined
-          callback(err)
-        else
-          success "finished arithmeticsR err=#{err}"
+  execCmds [
+    "rm -f lib/arithmeticsR.js src/arithmeticsR.js",
+    "./node_modules/.bin/pegjs src/arithmeticsR.pegjs",
+    "cat src/introR.txt src/arithmeticsR.js > lib/arithmeticsR.js",
+    "ls -l lib/arithmeticsR.js",
+  ]
 
 build_browser =(options, callback) ->
-  exec "rm -f public/js/arithmetics.js src/arithmetics.js", (err, stdout, stderr)  ->
-    console.log(err) if err
-    exec "./node_modules/.bin/pegjs -e arithmetics src/arithmetics.pegjs", (err, stdout, stderr) ->
-      console.log(err) if err
-      exec "mv -f src/arithmetics.js public/js", (err, stdout, stderr) ->
-        if callback != undefined
-          callback(err)
-        else
-          success "finished arithmetics err=#{err}"
+  execCmds [
+    "rm -f public/js/arithmetics.js src/arithmetics.js",
+    "./node_modules/.bin/pegjs -e arithmetics src/arithmetics.pegjs",
+    "mv -f src/arithmetics.js public/js",
+    "ls -l public/js/arithmetics.js",
+  ]
 
-  exec "rm -f public/js/arithmeticsR.js src/arithmeticsR.js public/js/bundle.js", (err, stdout, stderr)  ->
-    console.log(err) if err
-    exec "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", (err, stdout, stderr) ->
-      console.log(err) if err
-      exec "mv -f src/arithmeticsR.js public/js", (err, stdout, stderr) ->
-        console.log(err) if err
-        exec "browserify -o public/js/bundle.js public/js/libR.js", (err, stdout, stderr) ->
-          console.log(err) if err
-          if callback != undefined
-            callback(err)
-          else
-            success "finished arithmetics err=#{err}"
+  execCmds [
+    "rm -f public/js/arithmeticsR.js src/arithmeticsR.js public/js/bundle.js",
+    "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", 
+    "mv -f src/arithmeticsR.js public/js",
+    "./node_modules/.bin/browserify -o public/js/bundle.js public/js/appR.js",
+    "ls -l public/js/bundle.js",
+  ]
             
 lint = (options, callback) ->
   try
