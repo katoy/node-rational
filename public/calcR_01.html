@@ -15,12 +15,11 @@
 	＝
 	<div id="resultString" style="display:inline"></div>
       </div>
-      <div>
-	　
+      <div>	　
 	<div id="resultRational" style="display:inline"></div>
       </div>
       <div id="message"></div>
-      <pr><pre>
+      <pre>
 	  入力例と結果
 	  1+2+3 = 6
 	  12345679 * 9 = 11111111
@@ -28,13 +27,16 @@
           0.{9} = 1
 	  (1+1/9) * 9 = 10	  
 	  1.2 = 1.2, 6/5
-      </pre></pr>
+	  0.{9988776655443322} = 908070605040302/909090909090909
+      </pre>
       <a href="calc_01.html">通常の不動小数点版へ</a>
       <br/>
       <a href="https://github.com/katoy/node-rational">src</a>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script src="./js/bundle.js"></script>
+      <script src="./js/bundle.min.js"></script>
+      <!--  <script src="./js/bundle.js"></script>
+	-->
       <script src="./js/appR.js"></script>
   </body>
 </html>

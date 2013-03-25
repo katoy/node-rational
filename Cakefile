@@ -143,7 +143,8 @@ build_browser =(options, callback) ->
     "rm -f public/js/arithmeticsR.js src/arithmeticsR.js public/js/bundle.js",
     "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", 
     "mv -f src/arithmeticsR.js public/js",
-    "./node_modules/.bin/browserify -o public/js/bundle.js public/js/appR.js",
+    "./node_modules/.bin/browserify -o public/js/bundle.js public/js/libs.js",
+    "./node_modules/.bin/yuicompressor -o public/js/bundle.min.js public/js/bundle.js",
     "ls -l public/js/bundle.js",
   ]
             
