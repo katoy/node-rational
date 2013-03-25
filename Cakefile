@@ -40,7 +40,7 @@ _output = (data, color, prefix) ->
 
 _cleanFiles = () ->
 
-execCmds = (cmds) ->
+execCmds = (cmds, calback) ->
   exec cmds.join(' && '), (err, stdout, stderr) ->
     output = (stdout + stderr).trim()
     console.log(output + '\n') if (output)
@@ -83,9 +83,11 @@ option '-f', '--force', 'clean all files in output folder whatever they\'re comp
 option '-r', '--rebuild', 'do relative cleaning tasks before build js or generate documents'
 
 # Tasks
-task 'build', 'build coffee scripts into js', (options) -> build(options)
+task 'build', 'all build', (options) -> build_all(option)
+task 'build_rational', 'build Rational.js ', (options) -> build_rational(option)
 task 'build_parser', 'build parser', (options) -> build_parser(options)
 task 'build_browser', 'build parser for browser', (options) -> build_browser(options)
+
 task 'lint', 'lint coffee scripts', (options) -> lint(options)
 task 'doc', 'generate documents', (options) -> doc(options)
 task 'clean:all', 'clean pervious built js files and documents', (options) -> clean 'all', options.force
@@ -99,7 +101,15 @@ task 'coverage', 'do coverage', (options) -> coverage(options)
 task 'open_coverage', 'open coverage report', (options) -> open_coverage(options)
 
 # Task Functions
-build = (options, callback) ->
+build_all = (options, callback) ->
+  console.log "cake build_rational build_parser build_borwser ..."
+  execCmds [
+    "cake build_rational",
+    "cake build_parser",
+    "cake build_browser",
+  ]
+
+build_rational = (options, callback) ->
   clean 'js' if options.rebuild
   try
     coffeePath = which 'coffee'
@@ -120,10 +130,10 @@ build_parser =(options, callback) ->
   execCmds [
     "rm -f lib/arithmetics.js src/arithmetics.js", 
     "./node_modules/.bin/pegjs src/arithmetics.pegjs",
-    "mv -f src/arithmetics.js lib/",
+    "cp -f src/arithmetics.js lib/",
     "ls -l lib/arithmetics.js",
   ]
-            
+
   execCmds [
     "rm -f lib/arithmeticsR.js src/arithmeticsR.js",
     "./node_modules/.bin/pegjs src/arithmeticsR.pegjs",
@@ -133,13 +143,8 @@ build_parser =(options, callback) ->
 
 build_browser =(options, callback) ->
   execCmds [
-    "rm -f public/js/arithmetics.js public/js/Rational.js src/arithmetics.js ",
-    "./node_modules/.bin/pegjs -e arithmetics src/arithmetics.pegjs",
-    "mv -f src/arithmetics.js public/js",
-    "ls -l public/js/arithmetics.js",
-
-    "cp -f lib/Rational.js public/js",
-    "ls -l public/js/Rational.js",
+    "rm -f public/js/arithmetics.js public/js/arithmeticsR.js public/js/Rational.js",
+    "cp -f lib/arithmetics.js       lib/arithmeticsR.js       lib/Rational.js  public/js",
 
     "./node_modules/.bin/browserify -o public/js/bundle.js public/js/libs.js",
     "./node_modules/.bin/yuicompressor -o public/js/bundle.min.js public/js/bundle.js",
@@ -182,7 +187,26 @@ doc = (options, callback) ->
     else
       success 'building finished'
 
+clean_files = (files) ->
+  for f in files
+    if fs.existsSync f
+      puts "Deleting #{f}"
+      fs.unlink f
+
+clean_geneated_files =  ->
+  clean_files [
+    'public/js/Rational.js',
+    'public/js/arithmetics.js',
+    'public/js/arithmeticsR.js',
+    'public/js/bundle.js',
+    'public/js/bundle.min.js',
+    'public/js/bundle.min.js.gz',
+    'src/arithmetics.js',
+    'src/arithmeticsR.js',
+  ]
+
 clean = (target = 'all', isForce = false) ->
+  clean_geneated_files()
   if isForce
     if target is 'js' or 'all'
       fs.rimraf.sync jsOutput
