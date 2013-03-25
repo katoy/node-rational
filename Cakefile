@@ -133,16 +133,14 @@ build_parser =(options, callback) ->
 
 build_browser =(options, callback) ->
   execCmds [
-    "rm -f public/js/arithmetics.js src/arithmetics.js",
+    "rm -f public/js/arithmetics.js public/js/Rational.js src/arithmetics.js ",
     "./node_modules/.bin/pegjs -e arithmetics src/arithmetics.pegjs",
     "mv -f src/arithmetics.js public/js",
     "ls -l public/js/arithmetics.js",
-  ]
 
-  execCmds [
-    "rm -f public/js/arithmeticsR.js src/arithmeticsR.js public/js/bundle.js",
-    "./node_modules/.bin/pegjs src/arithmeticsR.pegjs", 
-    "mv -f src/arithmeticsR.js public/js",
+    "cp -f lib/Rational.js public/js",
+    "ls -l public/js/Rational.js",
+
     "./node_modules/.bin/browserify -o public/js/bundle.js public/js/libs.js",
     "./node_modules/.bin/yuicompressor -o public/js/bundle.min.js public/js/bundle.js",
     "ls -l public/js/bundle.js",
