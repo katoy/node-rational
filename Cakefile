@@ -143,12 +143,17 @@ build_parser =(options, callback) ->
 
 build_browser =(options, callback) ->
   execCmds [
+    "rm -f public/js/bundle*.js",
     "rm -f public/js/arithmetics.js public/js/arithmeticsR.js public/js/Rational.js",
     "cp -f lib/arithmetics.js       lib/arithmeticsR.js       lib/Rational.js  public/js",
 
     "./node_modules/.bin/browserify -o public/js/bundle.js public/js/libs.js",
     "./node_modules/.bin/yuicompressor -o public/js/bundle.min.js public/js/bundle.js",
-    "ls -l public/js/bundle.js",
+
+    "./node_modules/.bin/browserify -o public/js/bundleR.js public/js/libsR.js",
+    "./node_modules/.bin/yuicompressor -o public/js/bundleR.min.js public/js/bundleR.js",
+
+    "ls -l public/js/bundle*.js",
   ]
             
 lint = (options, callback) ->
@@ -200,7 +205,8 @@ clean_geneated_files =  ->
     'public/js/arithmeticsR.js',
     'public/js/bundle.js',
     'public/js/bundle.min.js',
-    'public/js/bundle.min.js.gz',
+    'public/js/bundleR.js',
+    'public/js/bundleR.min.js',
     'src/arithmetics.js',
     'src/arithmeticsR.js',
   ]

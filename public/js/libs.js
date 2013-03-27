@@ -1,2 +1,1 @@
-Rational = require("./Rational");
-arithmeticsR = require("./arithmeticsR");
+arithmetics = require("./arithmetics");

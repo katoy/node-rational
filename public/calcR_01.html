@@ -18,6 +18,7 @@
       <div>	　
 	<div id="resultRational" style="display:inline"></div>
       </div>
+      <div> N (2..36) 進表記 <input id="base" type="number" min="2" max="36" step="1" value="10"/></div>
       <div id="message"></div>
       <pre>
 	入力例と結果
@@ -26,7 +27,7 @@
         0.{9} = 1
 	(1+1/9) * 9 = 10	  
 	1.2 = 1.2, 6/5
-	0.{9988776655443322}          = 908070605040302/909090909090909
+	0.{9988776655443322}     = 908070605040302/909090909090909
 	(10*10) / (9*9) - 10 / 9 = 10/81 = 0.{123456790}
 	(8*8) / (9*9) - 8/9      = -8/81 = -0.{098765432}
 	1/ (9*9) - 1/999999999   = 0.{012345678}
@@ -36,8 +37,8 @@
       <a href="https://github.com/katoy/node-rational">src</a>
       
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script src="./js/bundle.min.js"></script>
-      <!--  <script src="./js/bundle.js"></script>
+      <script src="./js/bundleR.min.js"></script>
+      <!--  <script src="./js/bundleR.js"></script>
 	-->
       <script src="./js/appR.js"></script>
   </body>

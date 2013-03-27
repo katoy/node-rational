@@ -14,6 +14,9 @@ BIG_ONE = new bigdecimal.BigInteger("1")
 BIG_MINUS_ONE = new bigdecimal.BigInteger("-1")
 BIG_TEN = new bigdecimal.BigInteger("10")
 
+BASE_LETTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+BIG_36 = new bigdecimal.BigInteger("36")
+
 # Class:Rational
 # 有理数を現すためのクラス。
 class Rational
@@ -136,22 +139,65 @@ class Rational
     d = parseFloat @denominator()
     (1.0 * n) / d 
 
-  #
+  # 規約分数にする。
   reduce: ->
     g = gcd(@n, @d)  
     new Rational(@n.divide(g), @d.divide(g))
 
-  #
+  # 10 進数表記での分数表記を得る.
   toString: ->
-    "#{@n.toString()}/#{@d.toString()}"
+    @toStringN(10, false)
+
+  # N 進数 (base) 表記での分数表記を得る.
+  # base: bigdecimal or integer
+  #       default = 10
+  toStringN: (base = 10, show_base = true)->
+    "#{Rational.toStringN(@n, base, show_base)}/#{Rational.toStringN(@d, base, show_base)}"
+
+  # N 進数 (base) 表記を得る.
+  # bd: bigdecimal
+  # base: bigdecimal or integer
+  #       default = 10
+  # show_base 
+  @toStringN: (bd, base = 10, show_base = true) ->
+    bs = new bigdecimal.BigInteger("" + base)
+    throw "#--- Rational.toStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
+    throw "#--- Rational.toStringN: base <= 0" if bs.compareTo(BIG_36) > 0
+    # return bd.toString() if bs.compareTo(BIG_TEN) == 0
+
+    ans = ''
+    sign = if (bd.compareTo(BIG_ZERO) < 0) then "-" else ""
+    a = new bigdecimal.BigInteger("" + bd.abs())
+
+    return "#{sign}#{a}" if a.compareTo(BIG_ONE) == 0
+    return "0"           if a.compareTo(BIG_ZERO) == 0
+
+    while(true)
+      qr = a.divideAndRemainder(bs)
+      ans = BASE_LETTERS.charAt(qr[1].intValue()) + ans
+      a = qr[0]   
+      break if qr[0].compareTo(BIG_ZERO) == 0
+
+    base_notation = if ((show_base == true) and (ans != "0") and (ans != "1")) then "_#{base}" else ""
+    return "#{sign}#{ans}#{base_notation}"
 
   #
   toRepeatString:  ->
-    Rational.getRepeatString(@n, @d)
+    Rational.getRepeatStringN(@n, @d, 10, false)
+
+  toRepeatStringN: (base = 10, show_base = true) ->
+    Rational.getRepeatStringN(@n, @d, base, show_base)
 
   @getRepeatString: (a, b) ->
+    @getRepeatStringN(a, b, 10, false)
+
+  @getRepeatStringN: (a, b, base = 10, show_base = true) ->
     # See - http://ja.doukaku.org/9/
     #       > 分数を小数に展開 (循環小数は 0.{3} のように {} で循環部を示す)
+
+    bs = new bigdecimal.BigInteger("" + base)
+    throw "#--- Rational.toRepeatStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
+    throw "#--- Rational.toRepeatStringN: base <= 0" if bs.compareTo(BIG_36) > 0
 
     a = new bigdecimal.BigInteger("" + a) unless a instanceof bigdecimal.BigInteger
     b = new bigdecimal.BigInteger("" + b) unless b instanceof bigdecimal.BigInteger
@@ -160,19 +206,22 @@ class Rational
     a = a.abs()
     b = b.abs()
 
-    return "#{sign}#{a}" if b.compareTo(BIG_ONE) == 0
+    return "0"           if a.compareTo(BIG_ZERO) == 0
+    return "#{sign}#{a}" if a.compareTo(b) == 0
 
     m = []  # 余りを保存する   
 
-    r = "#{a.divide(b).toString()}"
-    r += "."  if a.remainder(b).compareTo(BIG_ZERO) > 0
-    a = a.remainder(b)
+    qr = a.divideAndRemainder(b)
+    r = Rational.toStringN(qr[0], bs, false)
+    r += "."  if qr[1].compareTo(BIG_ZERO) > 0
+    a = qr[1]
 
     while a.compareTo(BIG_ZERO) > 0
       m.push a.toString()
-      a = a.multiply(BIG_TEN)
-      r += "#{a.divide(b).toString()}"
-      a = a.remainder(b)
+      a = a.multiply(bs)
+      qr = a.divideAndRemainder(b)
+      r += BASE_LETTERS.charAt(qr[0].intValue())
+      a = qr[1]
 
       i = m.indexOf(a.toString())
       # console.log "------ i=#{i}, #{util.inspect(m, false, null)}"
@@ -180,7 +229,8 @@ class Rational
         r = r.substring(0, i+2) + '{' + r.substring(i+2) + "}"
         break
 
-    "#{sign}#{r}"
+    base_notation = if ((show_base == true) and (r != "0") and (r != "1")) then "_#{base}" else ""
+    "#{sign}#{r}#{base_notation}"
   
   #
   strPow10 = (p) ->

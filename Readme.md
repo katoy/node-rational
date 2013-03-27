@@ -132,5 +132,8 @@ http://homepage2.nifty.com/youichi_kato/src/pegjs/expression/calcR_01.html
 値評価して、分数や小数(場合のよっては循環小数)で表示します。
 
 
+TODO:
+=====
 
-
+10 進数だけでなく、n 進数 も扱えるようにすること。
+ 
