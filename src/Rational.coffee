@@ -214,6 +214,7 @@ class Rational
     qr = a.divideAndRemainder(b)
     r = Rational.toStringN(qr[0], bs, false)
     r += "."  if qr[1].compareTo(BIG_ZERO) > 0
+    pre_len = r.length
     a = qr[1]
 
     while a.compareTo(BIG_ZERO) > 0
@@ -226,7 +227,7 @@ class Rational
       i = m.indexOf(a.toString())
       # console.log "------ i=#{i}, #{util.inspect(m, false, null)}"
       if i >= 0  # 余りが繰り返えされたので...
-        r = r.substring(0, i+2) + '{' + r.substring(i+2) + "}"
+        r = r.substring(0, i + pre_len) + '{' + r.substring(i + pre_len) + "}"
         break
 
     base_notation = if ((show_base == true) and (r != "0") and (r != "1")) then "_#{base}" else ""

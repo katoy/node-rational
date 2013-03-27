@@ -58,3 +58,14 @@ describe "constructor (int)", ->
     assert.equal r.toStringN(16), "-C_16/D_16"
 
     assert.equal r.toStringN(), "-12_10/13_10"
+
+  it "Rational(10,3) = [10,3]", ->
+    r = new Rational(10,3)
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "10, 3"
+    assert.equal r.toString(), "10/3"
+    assert.equal r.toStringN(10), "10_10/3_10"
+    assert.equal r.toStringN(2), "1010_2/11_2"
+    assert.equal r.toStringN(8), "12_8/3_8"
+    assert.equal r.toStringN(16), "A_16/3_16"
+
+    assert.equal r.toStringN(), "10_10/3_10"
