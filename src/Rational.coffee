@@ -15,7 +15,8 @@ BIG_MINUS_ONE = new bigdecimal.BigInteger("-1")
 BIG_TEN = new bigdecimal.BigInteger("10")
 
 BASE_LETTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-BIG_36 = new bigdecimal.BigInteger("36")
+BASE_MAX_INT = BASE_LETTERS.length
+BASE_MAX = new bigdecimal.BigInteger("#{BASE_MAX_INT}")
 
 # Class:Rational
 # 有理数を現すためのクラス。
@@ -162,7 +163,7 @@ class Rational
   @toStringN: (bd, base = 10, show_base = true) ->
     bs = new bigdecimal.BigInteger("" + base)
     throw "#--- Rational.toStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
-    throw "#--- Rational.toStringN: base <= 0" if bs.compareTo(BIG_36) > 0
+    throw "#--- Rational.toStringN: base <= 0" if bs.compareTo(BASE_MAX) > 0
     # return bd.toString() if bs.compareTo(BIG_TEN) == 0
 
     ans = ''
@@ -197,7 +198,7 @@ class Rational
 
     bs = new bigdecimal.BigInteger("" + base)
     throw "#--- Rational.toRepeatStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
-    throw "#--- Rational.toRepeatStringN: base <= 0" if bs.compareTo(BIG_36) > 0
+    throw "#--- Rational.toRepeatStringN: base <= 0" if bs.compareTo(BASE_MAX) > 0
 
     a = new bigdecimal.BigInteger("" + a) unless a instanceof bigdecimal.BigInteger
     b = new bigdecimal.BigInteger("" + b) unless b instanceof bigdecimal.BigInteger
@@ -236,13 +237,9 @@ class Rational
   #
   strPow10 = (p) ->
     zs = ''
-    if p > 0
+    if p >= 0
       zs += '0' for i in [1.. p]
       "1#{zs}"
-    else if p == 0
-      "1"
-    else if p == -1
-      "0.1"
     else
       zs += '0' for i in [p.. -2]
       "0.#{zs}1"
@@ -276,7 +273,9 @@ class Rational
     new Rational(n, d)
 
   #
-  @parseStr: (str) ->
+  @parseStr: (str, base = "10") ->
+    base = parseInt(base) if base instanceof String
+
     repR = /^w*([+-]?)(\d+)\.?(\d*)\{(\d+)\}w*$/   # 循環小数
     fixpointR = /^w*([+-]?)(\d+)\.?(\d*)w*$/       # 小数
 
@@ -286,10 +285,12 @@ class Rational
       [x, s, a, b, c] = pat
       # console.log util.inspect(pat, false, null)
       sign = if (s == "-") then -1 else 1
-      intPart = new Rational(new bigdecimal.BigInteger(a))
-      nonRepeatPart = if (b == "") then new Rational(0) else new Rational(new bigdecimal.BigInteger(b), new bigdecimal.BigInteger(strPow10(b.length)))
-      n = new bigdecimal.BigInteger(c)
-      d = new bigdecimal.BigInteger(strPow10(c.length)).subtract(BIG_ONE).multiply(new bigdecimal.BigInteger(strPow10(b.length)))
+      intPart = new Rational(Rational.getBigIntegerBaseN(a, base))
+      powb = "1" + Array(b.length + 1).join("0")   # Append "0" (b.lenght) times.
+      nonRepeatPart = if (b == "") then new Rational(0) else new Rational(Rational.getBigIntegerBaseN(b, base), Rational.getBigIntegerBaseN(powb, base))
+      n = Rational.getBigIntegerBaseN(c, base)
+      powc = "1" + Array(c.length + 1).join("0")   # Append "0" (c.lenght) times.
+      d = Rational.getBigIntegerBaseN(powc, base).subtract(BIG_ONE).multiply(Rational.getBigIntegerBaseN(powb, base))
       repeatPart = new Rational(n, d)
       return intPart.add(nonRepeatPart).add(repeatPart).mul(sign)
 
@@ -299,8 +300,24 @@ class Rational
       # util.log "-------- #{util.inspect(pat, false, null)}"
       [x, s, a, b] = pat
       sign = if (s == "-") then -1 else 1
-      n = new bigdecimal.BigInteger("#{a}#{b}")
-      d = new bigdecimal.BigInteger(strPow10(b.length))
+      n = Rational.getBigIntegerBaseN("#{a}#{b}", base)
+      powb = "1" + Array(b.length + 1).join("0")   # Append "0" (b.lenght) times.
+      d = Rational.getBigIntegerBaseN(powb, base)
       return new Rational(n, d).mul(sign)
+
+  @getBigIntegerBaseN: (intstr, base = 10) ->
+
+    throw "#--- Rational.getBigIntegerBaseN: base <= 1" if base <= 1
+    throw "#--- Rational.getBigIntegerBaseN: base >= #{BASE_MAX_INT}" if base >= BASE_MAX_INT
+
+    bs = bigdecimal.BigInteger("#{base}")
+    n = bigdecimal.BigInteger("0")
+
+    for c in intstr.split("")
+      p = BASE_LETTERS.indexOf(c)
+      throw "#--- Rational.getBigIntegerBaseN: '#{c}' is not in ['0' .. '#{BASE_LETTERS.charAt(base-1)}']" if p < 0 or p >= base
+      n = n.multiply(bs).add(new bigdecimal.BigInteger("#{p}"))
+
+    n
 
 module.exports = Rational

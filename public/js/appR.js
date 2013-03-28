@@ -7,11 +7,12 @@ $(function() {
         
         var txt = $("#inp_text").val();
         var base = $("#base").val();
+        var show_base = (base !== "10");
         try {
             var val = arithmeticsR.parse(txt);
-            $("#resultString").text(val.toRepeatStringN(base, false));
+            $("#resultString").text(val.toRepeatStringN(base, show_base));
             if ("" + val.denominator() != "1") {
-                $("#resultRational").text(val.toStringN(base, false));
+                $("#resultRational").text(val.toStringN(base, show_base));
             } else {
                 $("#resultRational").text("");
             }

@@ -63,17 +63,26 @@ primary
       return ans;
     }
 
+basenotation
+  = "_" digits:([0-9]+) { return parseInt(digits.join("")); }
+
 integer "integer"
-  = sign:sign digits:[0-9]+ _ {
-      return Rational.parseStr(sign + digits.join(""));
+  = sign:sign digits:[0-9]+ bsn:basenotation? _ {
+      var base = bsn;
+      if (base === "") { base = 10; } 
+      return Rational.parseStr(sign + digits.join(""), base);
     }
 
 float "float"
-  = sign:sign parts:([0-9]* "." [0-9]* "{" [0-9]+ "}") _ {
-      return Rational.parseStr(sign + parts[0].join("") + "." + parts[2].join("") + "{" + parts[4].join("") + "}");
+  = sign:sign parts:([0-9]* "." [0-9]* "{" [0-9]+ "}") bsn:basenotation? _ {
+      var base = bsn;
+      if (base === "") { base = 10; } 
+      return Rational.parseStr(sign + parts[0].join("") + "." + parts[2].join("") + "{" + parts[4].join("") + "}", base);
     }
-  / sign:sign parts:([0-9]* "." [0-9]+) _ {
-      return Rational.parseStr(sign + parts[0].join("") + "." + parts[2].join(""));
+  / sign:sign parts:([0-9]* "." [0-9]+) bsn:basenotation? _ {
+      var base = bsn;
+      if (base === "") { base = 10; } 
+      return Rational.parseStr(sign + parts[0].join("") + "." + parts[2].join(""), base);
     }
 
 /* ===== Whitespace ===== */
