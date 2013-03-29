@@ -18,6 +18,9 @@ BASE_LETTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 BASE_MAX_INT = BASE_LETTERS.length
 BASE_MAX = new bigdecimal.BigInteger("#{BASE_MAX_INT}")
 
+#isString = (s) ->
+#  (typeof(s) == 'string') or (s instanceof String)
+
 # Class:Rational
 # 有理数を現すためのクラス。
 class Rational
@@ -27,12 +30,12 @@ class Rational
   #  d - 分母  // bigdecimal, int, string
   constructor: (n, d) ->
     throw "#--- Rational.constructor: n == undefined" if (n == undefined)
-    n = new bigdecimal.BigInteger("" + n) unless n instanceof bigdecimal.BigInteger
+    n = new bigdecimal.BigInteger("#{n}") unless n instanceof bigdecimal.BigInteger
 
     if (d == undefined)
       d = new bigdecimal.BigInteger("1")
     else if !(d instanceof bigdecimal.BigInteger)
-      d = new bigdecimal.BigInteger("" + d)
+      d = new bigdecimal.BigInteger("#{d}")
 
     throw "#--- Rational.constructor: d == 0" if d.compareTo(BIG_ZERO) == 0
 
@@ -125,12 +128,13 @@ class Rational
   
   #
   pow: (y) ->
-    unless y instanceof bigdecimal.BigInteger
-      throw "#--- Rational.pow: y is non-Integer" unless parseInt("" + y, 10) == parseFloat("" + y)
-      y = new bigdecimal.BigInteger("" + y)
+    yV = parseInt("#{y}")
+    throw "#--- Rational.pow: Error: '#{y}'" if isNaN(yV)
+    throw "#--- Rational.pow: '#{y}' is not Integer" unless "#{y}" == "#{yV}"
 
-    throw "#--- Rational.pow: y is non-Integer" unless y.floatValue() == y.intValue() 
-    throw "#--- Rational.pow: y is negative-Integer" if y.compareTo(BIG_ZERO) < 0
+    y = new bigdecimal.BigInteger("#{y}")
+
+    throw "#--- Rational.pow: '#{y}' is negative-Integer" if y.compareTo(BIG_ZERO) < 0
 
     new Rational(@numerator().pow(y), @denominator().pow(y))
   
@@ -161,14 +165,17 @@ class Rational
   #       default = 10
   # show_base 
   @toStringN: (bd, base = 10, show_base = true) ->
-    bs = new bigdecimal.BigInteger("" + base)
-    throw "#--- Rational.toStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
-    throw "#--- Rational.toStringN: base <= 0" if bs.compareTo(BASE_MAX) > 0
+    baseV = parseInt("#{base}") 
+    throw "#--- Rational.toStringN: Error: '#{base}'" if isNaN(baseV)
+    throw "#--- Rational.parseStr: '#{base}' is not Integer" unless "#{base}" == "#{Math.floor(baseV)}"
+    bs = new bigdecimal.BigInteger("#{baseV}")
+    throw "#--- Rational.toStringN: '#{base}' <= 1" if bs.compareTo(BIG_ONE) <= 0
+    throw "#--- Rational.toStringN: '#{base}' >= #{BASE_MAX_INT}" if bs.compareTo(BASE_MAX) > 0
     # return bd.toString() if bs.compareTo(BIG_TEN) == 0
 
     ans = ''
     sign = if (bd.compareTo(BIG_ZERO) < 0) then "-" else ""
-    a = new bigdecimal.BigInteger("" + bd.abs())
+    a = new bigdecimal.BigInteger("#{bd.abs()}")
 
     return "#{sign}#{a}" if a.compareTo(BIG_ONE) == 0
     return "0"           if a.compareTo(BIG_ZERO) == 0
@@ -180,9 +187,8 @@ class Rational
       break if qr[0].compareTo(BIG_ZERO) == 0
 
     base_notation = if ((show_base == true) and (ans != "0") and (ans != "1")) then "_#{base}" else ""
-    return "#{sign}#{ans}#{base_notation}"
+    "#{sign}#{ans}#{base_notation}"
 
-  #
   toRepeatString:  ->
     Rational.getRepeatStringN(@n, @d, 10, false)
 
@@ -195,13 +201,15 @@ class Rational
   @getRepeatStringN: (a, b, base = 10, show_base = true) ->
     # See - http://ja.doukaku.org/9/
     #       > 分数を小数に展開 (循環小数は 0.{3} のように {} で循環部を示す)
+    baseV = parseInt("#{base}") 
+    throw "#--- Rational.toRepeatStringN: Error: '#{base}'" if isNaN(baseV)
+    throw "#--- Rational.parseStr: '#{base}' is not Integer" unless "#{base}" == "#{Math.floor(baseV)}"
+    bs = new bigdecimal.BigInteger("#{baseV}")
+    throw "#--- Rational.toRepeatStringN: '#{base}' <= 1" if bs.compareTo(BIG_ONE) <= 0
+    throw "#--- Rational.toRepeatStringN: '#{base}' >= #{BASE_MAX_INT}" if bs.compareTo(BASE_MAX) > 0
 
-    bs = new bigdecimal.BigInteger("" + base)
-    throw "#--- Rational.toRepeatStringN: base <= 1" if bs.compareTo(BIG_ONE) <= 0
-    throw "#--- Rational.toRepeatStringN: base <= 0" if bs.compareTo(BASE_MAX) > 0
-
-    a = new bigdecimal.BigInteger("" + a) unless a instanceof bigdecimal.BigInteger
-    b = new bigdecimal.BigInteger("" + b) unless b instanceof bigdecimal.BigInteger
+    a = new bigdecimal.BigInteger("#{a}") unless a instanceof bigdecimal.BigInteger
+    b = new bigdecimal.BigInteger("#{b}") unless b instanceof bigdecimal.BigInteger
 
     sign = if (a.compareTo(BIG_ZERO) < 0) then "-" else ""
     a = a.abs()
@@ -251,13 +259,15 @@ class Rational
 
     str = sprintf("%+.12e", val)
     r = deR.exec(str)
-    throw "#--- Rational.parseFloat: Error: #{str}" if (r == null)
+    throw "#--- Rational.parseFloat: Error: '#{str}'" if (r == null)
 
     [x, s, n0, dot, n1, m] = r
     # console.log "-----------     s = #{s}, n0 = #{n0}, n1 = #{n1}, m = #{m}"
 
     sign = if (s == "-") then BIG_MINUS_ONE else BIG_ONE
     p = parseInt(m, 10)
+    throw "#--- Rational.parseFloat: Error: '#{m}'" if isNaN(p)
+
     n = new bigdecimal.BigInteger("#{n0}#{n1}").multiply(sign)
     d = new bigdecimal.BigInteger("1")
     if (p - n1.length > 0)
@@ -274,7 +284,11 @@ class Rational
 
   #
   @parseStr: (str, base = "10") ->
-    base = parseInt(base) if base instanceof String
+    baseV = parseInt("#{base}") 
+    throw "#--- Rational.parseStr: Error: '#{base}'" if isNaN(baseV)
+    throw "#--- Rational.parseStr: '#{base}' is not Integer" unless "#{base}" == "#{Math.floor(baseV)}"
+    throw "#--- Rational.parseStr: '#{base}' <= 1" if base <= 1
+    throw "#--- Rational.parseStr: '#{base}' >= #{BASE_MAX_INT}" if base >= BASE_MAX_INT
 
     repR = /^w*([+-]?)(\d+)\.?(\d*)\{(\d+)\}w*$/   # 循環小数
     fixpointR = /^w*([+-]?)(\d+)\.?(\d*)w*$/       # 小数
@@ -296,7 +310,7 @@ class Rational
 
     else
       pat = fixpointR.exec(str)
-      throw "#--- Rational.parseStr: Error: #{str}" if (pat == null)
+      throw "#--- Rational.parseStr: Error: '#{str}'" if (pat == null)
       # util.log "-------- #{util.inspect(pat, false, null)}"
       [x, s, a, b] = pat
       sign = if (s == "-") then -1 else 1
@@ -306,11 +320,13 @@ class Rational
       return new Rational(n, d).mul(sign)
 
   @getBigIntegerBaseN: (intstr, base = 10) ->
+    baseV = parseInt("#{base}") 
+    throw "#--- Rational.getBigIntegerBaseN: Error: '#{base}'" if isNaN(baseV)
+    throw "#--- Rational.getBigIntegerBaseN: '#{base}' is not Integer" unless "#{base}" == "#{baseV}"
+    throw "#--- Rational.getBigIntegerBaseN: '#{base}' <= 1" if baseV <= 1
+    throw "#--- Rational.getBigIntegerBaseN: '#{base}' >= #{BASE_MAX_INT}" if baseV >= BASE_MAX_INT
 
-    throw "#--- Rational.getBigIntegerBaseN: base <= 1" if base <= 1
-    throw "#--- Rational.getBigIntegerBaseN: base >= #{BASE_MAX_INT}" if base >= BASE_MAX_INT
-
-    bs = bigdecimal.BigInteger("#{base}")
+    bs = bigdecimal.BigInteger("#{baseV}")
     n = bigdecimal.BigInteger("0")
 
     for c in intstr.split("")

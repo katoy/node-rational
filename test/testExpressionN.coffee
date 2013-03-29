@@ -15,6 +15,11 @@ MAX_INT = Math.pow(2, 53)
 MIN_INT = 1 - MAX_INT
 
 describe "arithmeticsR.parse 整数", ->
+  it "(10_10)", ->
+    r = arithmeticsR.parse("10_10")
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "10, 1"
+    assert.equal r.reduce().toRepeatString(), "10"
+
   it "(10_2)", ->
     r = arithmeticsR.parse("10_2")
     assert.equal "#{r.numerator()}, #{r.denominator()}", "2, 1"

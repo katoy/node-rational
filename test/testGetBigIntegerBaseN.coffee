@@ -40,14 +40,14 @@ describe "getBigIntegerBaseN(str, int)", ->
       r = new Rational(Rational.getBigIntegerBaseN("1", 1))
       assert.ok(false)
     catch ex
-      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: base <= 1"
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: '1' <= 1"
 
   it '("1",37) -> error', ->
     try
       r = new Rational(Rational.getBigIntegerBaseN("1", 37))
       assert.ok(false)
     catch ex
-      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: base >= 36"
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: '37' >= 36"
 
   it '("A",10) -> error', ->
     try
@@ -86,4 +86,38 @@ describe "getBigIntegerBaseN(str, str)", ->
   it '("F","16") -> [F,16]', ->
     r = new Rational(Rational.getBigIntegerBaseN("F", "16"))
     assert.equal "#{r.numerator()}, #{r.denominator()}", "15, 1"
+
+describe "getBigIntegerBaseN(str)", ->
+  it '("10") -> [10,1]', ->
+    r = new Rational(Rational.getBigIntegerBaseN("10"))
+    assert.equal "#{r.numerator()}, #{r.denominator()}", "10, 1"
+
+describe "getBigIntegerBaseN(str)", ->
+  it '("1")', ->
+    try
+      r = new Rational(Rational.getBigIntegerBaseN("10", 1))
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: '1' <= 1"
+
+  it '("37")', ->
+    try
+      r = new Rational(Rational.getBigIntegerBaseN("10", 37))
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: '37' >= 36"
+
+  it '("A")', ->
+    try
+      r = new Rational(Rational.getBigIntegerBaseN("10", 'A'))
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: Error: 'A'"
+
+  it '("3..2")', ->
+    try
+      r = new Rational(Rational.getBigIntegerBaseN("10", '3..2'))
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.getBigIntegerBaseN: \'3..2\' is not Integer"
 

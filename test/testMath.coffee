@@ -126,6 +126,12 @@ describe "div", ->
     assert.equal r.toString(), "1/3"
 
 describe "pow", ->
+  it "2/3 pow 1 -> 2/3", ->
+    assert.equal (new Rational(2, 3)).pow(1).toString(), '2/3'
+
+  it "2/3 pow '1' -> 2/3", ->
+    assert.equal (new Rational(2, 3)).pow('1').toString(), '2/3'
+
   it "2/3 pow 2 -> 4/9", ->
     assert.equal (new Rational(2, 3)).pow(2).toString(), '4/9'
 
@@ -136,19 +142,49 @@ describe "pow", ->
     try
       assert.equal (new Rational(4, 9)).pow(0.5).toString(), '1/1'
       assert.ok(false)
-    catch e
-      assert.equal "" + e, "#--- Rational.pow: y is non-Integer"
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: '0.5' is not Integer"
 
   it "4/9 pow -1 -> error", ->
     try
       assert.equal (new Rational(4, 9)).pow(-1).toString(), '1/1'
       assert.ok(false)
-    catch e
-      assert.equal "" + e, "#--- Rational.pow: y is negative-Integer"
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: '-1' is negative-Integer"
 
   it "2/3 pow 0 -> 1/1", ->
     assert.equal (new Rational(2, 3)).pow(0).toString(), '1/1'
-  
+
+  it "2/3 pow '0' -> 1/1", ->
+    assert.equal (new Rational(2, 3)).pow("0").toString(), '1/1'
+
+  it "2/3 pow 'A' -> error", ->
+    try
+      new Rational(2, 3).pow('A')
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: Error: 'A'"
+
+  it "2/3 pow '2.3' -> error", ->
+    try
+      new Rational(2, 3).pow(2.3)
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: '2.3' is not Integer"
+
+    try
+      new Rational(2, 3).pow('2.3')
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: '2.3' is not Integer"
+
+  it "2/3 pow '2..3' -> error", ->
+    try
+      new Rational(2, 3).pow('2..3')
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.pow: '2..3' is not Integer"
+
 describe "floatValue", ->
   it "1/3 -> 0.33333...", ->
     r = new Rational(1, 3)

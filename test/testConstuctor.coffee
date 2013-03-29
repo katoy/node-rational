@@ -45,8 +45,12 @@ describe "constructor (int)", ->
     assert.equal r.toString(), "0/1"
     assert.equal r.reduce().toString(), "0/1"
 
-  #it "Rational(1,0) -> error", ->
-  #  assert.throw(new Rational(1, 0), "")
+  it "Rational(1,0) -> error", ->
+    try
+      new Rational(1, 0)
+      assert.ok false
+    catch ex
+      assert.equal ex.toString(), "#--- Rational.constructor: d == 0"
  
   it "Rational(2) = [2,1]", ->
     r = new Rational(2)
