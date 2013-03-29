@@ -98,6 +98,7 @@ task 'test', 'do test', (options) -> test(options)
 #task 'test2_node_tap', 'do test2_node_tap', (options) -> test2_node_tap(options)
 #task 'test2_phantomjs', 'do test2_phantomjs', (options) -> test2_phantomjs(options)
 task 'coverage', 'do coverage', (options) -> coverage(options)
+task 'report_coverage', 'make coverage report', (options) -> report_coverage(options)
 task 'open_coverage', 'open coverage report', (options) -> open_coverage(options)
 
 # Task Functions
@@ -108,6 +109,7 @@ build_all = (options, callback) ->
     "cake build_parser",
     "cake build_browser",
   ]
+  callback?()
 
 build_rational = (options, callback) ->
   clean 'js' if options.rebuild
@@ -140,6 +142,7 @@ build_parser =(options, callback) ->
     "cat src/introR.txt src/arithmeticsR.js > lib/arithmeticsR.js",
     "ls -l lib/arithmeticsR.js",
   ]
+  callback?()
 
 build_browser =(options, callback) ->
   execCmds [
@@ -155,6 +158,7 @@ build_browser =(options, callback) ->
 
     "ls -l public/js/bundle*.js",
   ]
+  callback?()
             
 lint = (options, callback) ->
   try
@@ -321,10 +325,7 @@ make_coverage = (callback) ->
 
 run_coverage = (callback) ->
   process.env['TEST_COV'] = 1
-  options = [
-    '--reporter',
-    'html-cov'
-  ]
+  options = [ '--reporter', 'html-cov']
   mocha = spawn "#{bin_path}/mocha", options
 
   fileStream = fs.createWriteStream 'coverage.html'
@@ -336,17 +337,25 @@ run_coverage = (callback) ->
   mocha.stderr.on 'data', data_handler
   mocha.on 'exit', (status) -> callback?() if status is 0
 
+report_coverage = (options) ->
+  remove_coverage ->
+    make_coverage ->
+      run_coverage ->
+        remove_coverage ->
+          success 'finished. See ./coverage.html. (cake open_coverage)'
+  
 coverage = (options) ->
   # puts "Do following."
   # puts '  $ rm -fr lib-cov'
   # puts '  $ jscoverage lib lib-cov'
   # puts '  $ TEST_COV=1 mocha --reporter html-cov > coverage.html'
   # puts ''
-  build {}, ->
-    remove_coverage ->
-      make_coverage ->
-        run_coverage ->
-          success 'finished. See ./coverage.html. (cake open_coverage)'
+  console.log "cake build_rationa, cake build_parser, cake report_coverage, ...."
+  execCmds [
+    "cake build_rational",
+    "cake build_parser",
+    "cake report_coverage"
+  ]
 
 open_coverage = (callback) ->
   exec 'open coverage.html'

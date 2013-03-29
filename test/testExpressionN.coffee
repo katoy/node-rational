@@ -1,11 +1,10 @@
 assert = require('chai').assert
 path = require 'path'
 
-libPath = if (process.env.TEST_COV) then 'lib-cov/arithmetidcsR' else  'lib/arithmeticsR'
+libPath = if (process.env.TEST_COV) then 'lib-cov' else  'lib'
 libPath = path.join __dirname, '..', libPath
-arithmeticsR = require libPath
-
-Rational = require '../lib/Rational'
+arithmeticsR = require(path.join libPath, 'arithmeticsR')
+Rational = require(path.join libPath, 'Rational')
 
 util = require 'util'
 
