@@ -103,7 +103,7 @@ task 'open_coverage', 'open coverage report', (options) -> open_coverage(options
 
 # Task Functions
 build_all = (options, callback) ->
-  console.log "cake build_rational build_parser build_borwser ..."
+  console.log "cake build_rational build_parser build_browser ..."
   execCmds [
     "cake build_rational",
     "cake build_parser",
