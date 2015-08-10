@@ -25,8 +25,7 @@
     "pegjs": "~0.7.0",
     "bigdecimal": "~0.6.1",
     "pillion": "0.0.7",
-    "burro": "~0.4.11",
-    "dnode": "~1.0.5"
+    "burro": "~0.4.11"
   },
   "devDependencies": {
     "mocha": ">=1.8.2",

@@ -18,12 +18,14 @@ travis: [![Build Status](https://travis-ci.org/katoy/node-rational.png?branch=ma
     $ npm test
 	$ npm start
 
-このライブリーでは循環種数は、繰り返し部分を {, } で囲んで表記します。
+このライブリーでは循環種数は、繰り返し部分を {, } で囲んで表記します。  
+
 例：
 - 1/3 = 3.3333... は 0.{3}
 - 1/6 = 0.166... は 0.1{6}
 
-n 進数であることは _n を数字列の末尾に津kて示します。
+n 進数であることは _n を数字列の末尾に付けて示します。  
+
 例
 - 10_2  は 2 進数の 10
 - 0.{3}_4 は 4 進数の 0.33333 ... 
@@ -138,7 +140,7 @@ Developing
 
 http://homepage2.nifty.com/youichi_kato/src/pegjs/expression/calcR_01.html  
 テキストエリアに式を入れて ENTER キーを押すと、
-値評価して、分数や小数(場合のよっては循環小数)で表示します。
+値評価して、分数や小数(場合によっては循環小数)で表示します。
 
 
 License
