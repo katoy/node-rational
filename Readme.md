@@ -4,7 +4,7 @@ This is fractopn library in coffee-script.
 これは 分数、循環種数表記をサポートする有理数を扱う coffee-script のコードです。
 (See also https://github.com/katoy/scala_rational )
 
-travis: [![Build Status](https://travis-ci.org/katoy/node-rational.png?branch=master)](https://travis-ci.org/katoy/node-rational)
+travis: [![Build Status](https://travis-ci.org/katoy/node-rational.png?branch=master)](https://travis-ci.org/katoy/node-rational) [![Greenkeeper badge](https://badges.greenkeeper.io/katoy/node-rational.svg)](https://greenkeeper.io/)
 
 インストール
 ============
